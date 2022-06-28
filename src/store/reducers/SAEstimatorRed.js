@@ -1,31 +1,31 @@
 import * as actionTypes from '../types/SAEstimatorTypes';
 
 const initAdvice = {
-  name: '',
-  phone: '',
-  email: '',
-  age: '',
-  gender: '',
+  patient: Object,
+  diagnosis: '',
+  doctor: '',
+  radiation: Boolean,
+  admission_type: '',
+  diagnostics: [],
   isIPDPackage: null,
   isEmergency: null,
   step: 0,
-  ward: 0,
+  ward: '',
   icu: {
-    type: '',
-    days: 0,
+    icu_type: '',
+    days: '',
   },
-  doctor: '',
-  treatment: '',
+  speciality: '',
   payment: {
-    type: '',
+    mode: '',
     company: '',
   },
   other: {
-    medicine: 0,
-    equipment: 0,
-    blood: 0,
-    stent: 0,
-    visitTotal: 0,
+    medicine: '',
+    equipment: '',
+    blood: '',
+    stent: '',
+    miscellaneous: '',
   },
   nonPackages: {
     services: [
@@ -41,6 +41,13 @@ const initAdvice = {
       },
     ],
   },
+  misc: {
+    services: [
+      {
+        i: 0,
+      },
+    ],
+  },
   investigations: {
     services: [
       {
@@ -49,7 +56,7 @@ const initAdvice = {
     ],
     total: {
       calc: false,
-      value: 0,
+      value: '',
     },
   },
   procedures: {
@@ -60,43 +67,32 @@ const initAdvice = {
     ],
     total: {
       calc: false,
-      value: 0,
+      value: '',
     },
   },
 };
 
 const SAEstimatorRed = (state = initAdvice, action) => {
   switch (action.type) {
-    // Personal Details
+    //add full patient
     case actionTypes.ADD_FULL_NAME:
-      const {name} = action.payload.item;
+      const {patient} = action.payload.item;
       return {
         ...state,
-        name,
+        patient: patient,
       };
-    case actionTypes.ADD_PHONE:
-      const {phone} = action.payload.item;
+    // admission details
+    case actionTypes.ADM_TYPE:
+      const {adm_type} = action.payload.item;
       return {
         ...state,
-        phone: phone,
+        admission_type: adm_type,
       };
-    case actionTypes.ADD_EMAIL:
-      const {email} = action.payload.item;
+    case actionTypes.RAD_ADV:
+      const {rad_adv} = action.payload.item;
       return {
         ...state,
-        email,
-      };
-    case actionTypes.ADD_AGE:
-      const {age} = action.payload.item;
-      return {
-        ...state,
-        age,
-      };
-    case actionTypes.ADD_GENDER:
-      const {gender} = action.payload.item;
-      return {
-        ...state,
-        gender,
+        radiation: rad_adv,
       };
     // Estimate Type
     case actionTypes.EDIT_IPD_PACKAGES:
@@ -108,7 +104,7 @@ const SAEstimatorRed = (state = initAdvice, action) => {
     case actionTypes.ADD_TREATMENT:
       return {
         ...state,
-        treatment: action.payload.item.treatment,
+        diagnosis: action.payload.item.treatment,
       };
 
     case actionTypes.ADD_WARD_STAY:
@@ -127,7 +123,7 @@ const SAEstimatorRed = (state = initAdvice, action) => {
       const {type} = action.payload.item;
       return {
         ...state,
-        icu: {...state.icu, type},
+        icu: {...state.icu, icu_type: type},
       };
     // non packages
     case actionTypes.ADD_NEW_NON_PACKAGE:
@@ -196,6 +192,17 @@ const SAEstimatorRed = (state = initAdvice, action) => {
           services: tempminorsurgery,
         },
       };
+    case actionTypes.ADD_SAME_DOCTOR:
+      const {doc_index, doc_surgery} = action.payload.item;
+      let doc = state.nonPackages.services;
+      doc[doc_index].sameDoctor = doc_surgery;
+      return {
+        ...state,
+        nonPackages: {
+          ...state.nonPackages,
+          services: doc,
+        },
+      };
     // Packages
     case actionTypes.ADD_NEW_PACKAGE:
       return {
@@ -225,6 +232,37 @@ const SAEstimatorRed = (state = initAdvice, action) => {
         packages: {
           ...state.packages,
           services: deletepackagetemp,
+        },
+      };
+    // misc
+    case actionTypes.ADD_NEW_MISC:
+      return {
+        ...state,
+        misc: {
+          ...state.misc,
+          services: [...state.misc.services, {id: state.misc.length}],
+        },
+      };
+    case actionTypes.ADD_MISC:
+      const {newMisc, misc_id} = action.payload.item;
+      const misc_temp = state.misc.services;
+      misc_temp[misc_id] = newMisc;
+      return {
+        ...state,
+        misc: {
+          ...state.misc,
+          services: misc_temp,
+        },
+      };
+    case actionTypes.DELETE_PACKAGE:
+      const {misc_index} = action.payload.item;
+      const delete_misc = state.misc.services;
+      delete_misc.splice(misc_index, 1);
+      return {
+        ...state,
+        misc: {
+          ...state.misc,
+          services: delete_misc,
         },
       };
     // Investigation
@@ -323,11 +361,17 @@ const SAEstimatorRed = (state = initAdvice, action) => {
         ...state,
         doctor: doctor,
       };
+    case actionTypes.ADD_SPECIALITY:
+      const {speciality} = action.payload.item;
+      return {
+        ...state,
+        speciality,
+      };
     case actionTypes.ADD_PAYMENT_TYPE:
       const {paymentType} = action.payload.item;
       return {
         ...state,
-        payment: {...state.payment, type: paymentType},
+        payment: {...state.payment, mode: paymentType},
       };
     case actionTypes.ADD_PAYMENT_COMPANY:
       const {paymentCompany} = action.payload.item;
@@ -353,6 +397,12 @@ const SAEstimatorRed = (state = initAdvice, action) => {
       return {
         ...state,
         other: {...state.other, blood},
+      };
+    case actionTypes.ADD_MISCELLANEOUS:
+      const {miscellaneous} = action.payload.item;
+      return {
+        ...state,
+        other: {...state.other, miscellaneous},
       };
     case actionTypes.ADD_STENT:
       const {stent} = action.payload.item;

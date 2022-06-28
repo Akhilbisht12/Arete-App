@@ -20,6 +20,7 @@ import {
   SillyButton,
 } from '../Silly/components/silly_comps';
 import silly from '../Silly/styles/silly';
+import {useEffect} from 'react';
 
 const {width, height} = Dimensions.get('window');
 let genderColor = ['white', '#151E3F'];
@@ -27,18 +28,24 @@ var textIconColor = ['#151E3F', 'white'];
 
 const RegisterPatient = ({}) => {
   const [loader, setLoader] = useState(false);
-  const [data, setData] = useState({
+  const [states, setStates] = useState([]);
+  const init = {
     uhid: '',
     firstName: '',
     lastName: '',
-    address: '',
+    address: {
+      house: '',
+      city: '',
+      state: '',
+      postal_code: '',
+    },
     age: '',
     email: '',
     gender: '',
     phone: '',
-  });
+  };
+  const [data, setData] = useState(init);
   const [genderSelector, setGenderSelector] = useState();
-
   const handleRegister = async () => {
     data.age = parseInt(data.age);
     data.phone = parseInt(data.phone);
@@ -64,10 +71,10 @@ const RegisterPatient = ({}) => {
         `${SERVER_URL}/api/v1/patient/register/`,
         data,
       );
-      console.log(response.patient);
+      console.log(response.data);
       ToastAndroid.show('Patient Registered', ToastAndroid.SHORT);
       setLoader(false);
-      setData('');
+      setData(init);
       // addPatient({ patient: response.patient });
       // navigation.navigate("PatientEntry", { data: response.patient });
     } catch (error) {
@@ -76,6 +83,7 @@ const RegisterPatient = ({}) => {
       setLoader(false);
     }
   };
+
   return (
     <View style={[silly.f1]}>
       <View style={styles.header}>
@@ -99,7 +107,7 @@ const RegisterPatient = ({}) => {
         <SillyText style={styles.itemName}>Enter UHID</SillyText>
 
         <SillyInput
-          value={data.uhid}
+          value={data.uhid.toString()}
           keyboardType="number-pad"
           onChangeText={e => setData({...data, uhid: e})}
           placeholder="UHID"
@@ -114,7 +122,7 @@ const RegisterPatient = ({}) => {
         <SillyText style={styles.itemName}>Enter Pateint Age</SillyText>
 
         <SillyInput
-          value={data.age}
+          value={data.age.toString()}
           onChangeText={e => setData({...data, age: e.toString()})}
           keyboardType="number-pad"
           placeholder="Age"
@@ -140,14 +148,14 @@ const RegisterPatient = ({}) => {
                   mx={5}
                   px={15}
                   py={10}
-                  style={[silly.aic, silly.w20p]}
+                  style={[silly.aic, silly.w25p]}
                   bg={genderSelector === i ? genderColor[1] : genderColor[0]}>
                   <Ionicons
                     name={item.icon}
                     color={`${
                       genderSelector === i ? textIconColor[1] : textIconColor[0]
                     }`}
-                    size={30}
+                    size={25}
                   />
                   <SillyText
                     style={[
@@ -170,23 +178,37 @@ const RegisterPatient = ({}) => {
         <SillyText style={styles.itemName}>Enter Phone Number</SillyText>
         <SillyInput
           keyboardType="number-pad"
-          value={data.phone}
+          value={data.phone.toString()}
           onChangeText={e => setData({...data, phone: e.toString()})}
           placeholder="Phone"
         />
 
         <SillyText style={styles.itemName}>Enter Address</SillyText>
-        <SillyInput
-          value={data.address}
-          onChangeText={e => setData({...data, address: e})}
-          placeholder="Address"
-        />
+        {[
+          {name: 'House No', val: 'house', type: 'number-pad'},
+          {name: 'City', val: 'city'},
+          {name: 'State', val: 'state'},
+          {name: 'Pincode', val: 'postal_code', type: 'number-pad'},
+        ].map((item, i) => {
+          return (
+            <SillyInput
+              value={data.address[item.val]}
+              keyboardType={item.type ? item.type : null}
+              placeholder={item.name}
+              onChangeText={text => {
+                setData(prev => {
+                  prev.address[item.val] = text;
+                  return {...prev};
+                });
+              }}
+            />
+          );
+        })}
         <SillyButton
           style={[silly.jcc, silly.fr]}
           my={30}
-          on
           bg="#0F7173"
-          Press={handleRegister}>
+          onPress={handleRegister}>
           <SillyText my={8} center size={20}>
             Add Details
           </SillyText>
@@ -237,9 +259,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapDispatchToProps = dispatch => {
-  return {
-    addPatient: item => dispatch(addPatient(item)),
-  };
-};
-export default connect(null, mapDispatchToProps)(RegisterPatient);
+export default RegisterPatient;

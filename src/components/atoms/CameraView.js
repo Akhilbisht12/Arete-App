@@ -7,11 +7,14 @@ import {
   Text,
   Image,
   PermissionsAndroid,
+  Alert,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {Camera, useCameraDevices} from 'react-native-vision-camera';
 import Icon from 'react-native-vector-icons/Ionicons';
 import silly from '../../Silly/styles/silly';
+import SillyText from '../../Silly/components/SillyText';
+import {clr1} from '../../config/globals';
 
 const CameraView = ({photo, setPhoto, setCamera, width}) => {
   const {height} = Dimensions.get('window');
@@ -20,17 +23,19 @@ const CameraView = ({photo, setPhoto, setCamera, width}) => {
   const camera = useRef(null);
   const [showPhoto, setShowPhoto] = useState(false);
   const [flash, setFlash] = useState(false);
+  const [perm, setPerm] = useState();
   useEffect(() => {
-    const getCameraPermissions = async () => {
-      const cameraPermission = await Camera.getCameraPermissionStatus();
-      if (cameraPermission === 'denied') {
-        console.log('dd');
-        const newCameraPermission = await Camera.requestCameraPermission();
-        console.log(newCameraPermission);
-      }
-    };
     getCameraPermissions();
   }, []);
+  const getCameraPermissions = async () => {
+    const cameraPermission = await Camera.getCameraPermissionStatus();
+    setPerm(cameraPermission);
+    if (cameraPermission === 'denied') {
+      const newCameraPermission = await Camera.requestCameraPermission();
+      setPerm(newCameraPermission);
+      console.log(newCameraPermission);
+    }
+  };
   const handleFlash = () => {
     setFlash(!flash);
   };
@@ -45,6 +50,20 @@ const CameraView = ({photo, setPhoto, setCamera, width}) => {
   if (device == null) {
     return <ActivityIndicator />;
   }
+  if (perm === 'denied') {
+    Alert.alert(
+      'Camera Permission Required',
+      'Please allow camera permession to capture prescription',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {text: 'OK', onPress: () => getCameraPermissions()},
+      ],
+    );
+  }
   if (showPhoto) {
     return (
       <View>
@@ -57,6 +76,7 @@ const CameraView = ({photo, setPhoto, setCamera, width}) => {
         <View>
           <View style={[silly.p1, silly.fr, silly.jcbtw, silly.aic]}>
             <TouchableOpacity
+              style={[silly.fr, silly.aic]}
               onPress={() => {
                 setPhoto('');
                 setShowPhoto(false);
@@ -71,8 +91,11 @@ const CameraView = ({photo, setPhoto, setCamera, width}) => {
                   borderRadius: 100,
                 }}
               />
+              <SillyText color={clr1} size={20} mx={10}>
+                Retake
+              </SillyText>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setCamera(false)}>
+            {/* <TouchableOpacity onPress={() => setCamera(false)}>
               <Icon
                 name="ios-checkmark-done-sharp"
                 size={25}
@@ -83,7 +106,7 @@ const CameraView = ({photo, setPhoto, setCamera, width}) => {
                   borderRadius: 200,
                 }}
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
       </View>

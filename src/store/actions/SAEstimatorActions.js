@@ -5,6 +5,12 @@ export const addFullName = item => {
     payload: {item},
   };
 };
+export const addSpeciality = item => {
+  return {
+    type: actionTypes.ADD_SPECIALITY,
+    payload: {item},
+  };
+};
 export const addPhone = item => {
   return {
     type: actionTypes.ADD_PHONE,
@@ -201,6 +207,14 @@ export const addMinorToSurgery = item => {
     },
   };
 };
+export const addSameDoctor = item => {
+  return {
+    type: actionTypes.ADD_SAME_DOCTOR,
+    payload: {
+      item,
+    },
+  };
+};
 export const editMinorSurgeryPercent = item => {
   return {
     type: actionTypes.EDIT_MINOR_SURGERY_PERCENT,
@@ -392,6 +406,15 @@ export const addStent = item => {
     },
   };
 };
+export const addOtherMisc = item => {
+  console.log(item);
+  return {
+    type: actionTypes.ADD_MISCELLANEOUS,
+    payload: {
+      item,
+    },
+  };
+};
 export const addInvestigationTotal = item => {
   return {
     type: actionTypes.ADD_INVESTIGATION_TOTAL,
@@ -427,6 +450,45 @@ export const editStep = item => {
 export const restoreState = item => {
   return {
     type: actionTypes.RESTORE_STATE,
+    payload: {
+      item,
+    },
+  };
+};
+
+// misc
+export const addMiscPackage = item => {
+  return {
+    type: actionTypes.ADD_MISC,
+    payload: {item},
+  };
+};
+
+export const addNewMisc = item => {
+  return {
+    type: actionTypes.ADD_NEW_MISC,
+    payload: {},
+  };
+};
+export const deleteMisc = item => {
+  return {
+    type: actionTypes.DELETE_MISC,
+    payload: {
+      item,
+    },
+  };
+};
+
+// adm type and rad adv
+export const adm_type = item => {
+  return {
+    type: actionTypes.ADM_TYPE,
+    payload: {item},
+  };
+};
+export const rad_type = item => {
+  return {
+    type: actionTypes.RAD_ADV,
     payload: {
       item,
     },

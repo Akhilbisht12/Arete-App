@@ -20,6 +20,7 @@ export const EDIT_CHARGE = 'EDIT_CHARGE';
 export const EDIT_EMERGENCY = 'EDIT_EMERGENCY';
 export const DELETE_ADD_CHARGE = 'DELETE_ADD_CHARGE';
 export const ADD_DOCTOR = 'ADD_DOCTOR';
+export const ADD_SPECIALITY = 'ADD_SPECIALITY';
 export const ADD_REMARK = 'ADD_REMARK';
 export const ADD_PAYMENT_TYPE = 'ADD_PAYMENT_TYPE';
 export const ADD_PAYMENT_COMPANY = 'ADD_PAYMENT_COMPANY';
@@ -46,13 +47,24 @@ export const DELETE_DIAGNOSTIC = 'DELETE_DIAGNOSTIC';
 export const ADD_NEW_PACKAGE = 'ADD_NEW_PACKAGE';
 export const ADD_PACKAGE = 'ADD_PACKAGE';
 export const DELETE_PACKAGE = 'DELETE_PACKAGE';
+//add other charges
 export const ADD_MEDICINE_CHARGE = 'ADD_MEDICINE_CHARGE';
 export const ADD_EQUIPMENT_CHARGE = 'ADD_EQUIPMENT_CHARGE';
 export const ADD_BLOOD_REQUIREMENT = 'ADD_BLOOD_REQUIREMENT';
 export const ADD_STENT = 'ADD_STENT';
+export const ADD_MISCELLANEOUS = 'ADD_MISCELLANEOUS';
 export const ADD_INVESTIGATION_TOTAL = 'ADD_INVESTIGATION_TOTAL';
 export const ADD_PROCEDURE_TOTAL = 'ADD_PROCEDURE_TOTAL';
 export const VISIT_TOTAL = 'VISIT_TOTAL';
 export const EDIT_STEP = 'EDIT_STEP';
 export const RESTORE_STATE = 'RESTORE_STATE';
 export const ADD_NEW_NON_PACKAGE = 'ADD_NEW_NON_PACKAGE';
+export const ADD_SAME_DOCTOR = 'ADD_SAME_DOCTOR';
+// misc
+export const ADD_NEW_MISC = 'ADD_NEW_MISC';
+export const ADD_MISC = 'ADD_MISC';
+export const DELETE_MISC = 'DELETE_MISC';
+
+//admission type
+export const ADM_TYPE = 'ADM_TYPE';
+export const RAD_ADV = 'RAD_ADV';
