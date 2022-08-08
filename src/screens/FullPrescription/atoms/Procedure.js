@@ -97,10 +97,10 @@ const Procedure = ({
               </SillyText>
               <View style={[silly.fr]}>
                 <SillyView bg={clr1}>
-                  <Text>{item.department}</Text>
+                  <SillyText>{item.department}</SillyText>
                 </SillyView>
                 <SillyView bg={clr1}>
-                  <Text>{item.department_type}</Text>
+                  <SillyText>{item.department_type}</SillyText>
                 </SillyView>
               </View>
             </View>

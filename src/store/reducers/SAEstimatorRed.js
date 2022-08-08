@@ -1,75 +1,66 @@
 import * as actionTypes from '../types/SAEstimatorTypes';
 
 const initAdvice = {
-  patient: Object,
-  diagnosis: '',
-  doctor: '',
-  radiation: Boolean,
-  admission_type: '',
-  diagnostics: [],
+  patient: null,
+  diagnosis: null,
+  speciality: null,
+  doctor: null,
+  is_adm: null,
+  admission_type: null,
+  is_estimate: null,
+  is_diag: null,
   isIPDPackage: null,
   isEmergency: null,
-  step: 0,
-  ward: '',
-  icu: {
-    icu_type: '',
-    days: '',
-  },
-  speciality: '',
   payment: {
-    mode: '',
-    company: '',
+    mode: null,
+    insurance: {
+      name: null,
+      policy_number: null,
+      policy_amount: null,
+    },
+  },
+  diagnostics: {services: []},
+  step: 0,
+  ward: null,
+  icu: {
+    icu_type: null,
+    days: null,
   },
   other: {
-    medicine: '',
-    equipment: '',
-    blood: '',
-    stent: '',
-    miscellaneous: '',
+    medicine: null,
+    equipment: null,
+    blood: null,
+    stent: null,
+    miscellaneous: null,
   },
   nonPackages: {
-    services: [
-      {
-        i: 0,
-      },
-    ],
+    services: [],
   },
   packages: {
-    services: [
-      {
-        i: 0,
-      },
-    ],
+    services: [],
   },
   misc: {
-    services: [
-      {
-        i: 0,
-      },
-    ],
-  },
-  investigations: {
-    services: [
-      {
-        i: 0,
-      },
-    ],
+    services: [],
     total: {
       calc: false,
-      value: '',
+      value: null,
+    },
+  },
+  investigations: {
+    services: [],
+    total: {
+      calc: false,
+      value: null,
     },
   },
   procedures: {
-    services: [
-      {
-        i: 0,
-      },
-    ],
+    services: [],
     total: {
       calc: false,
-      value: '',
+      value: null,
     },
   },
+  pres: null,
 };
 
 const SAEstimatorRed = (state = initAdvice, action) => {
@@ -88,11 +79,17 @@ const SAEstimatorRed = (state = initAdvice, action) => {
         ...state,
         admission_type: adm_type,
       };
-    case actionTypes.RAD_ADV:
-      const {rad_adv} = action.payload.item;
+    case actionTypes.IS_EST:
+      const {is_est} = action.payload.item;
       return {
         ...state,
-        radiation: rad_adv,
+        is_estimate: is_est,
+      };
+    case actionTypes.IS_ADM:
+      const {is_adm} = action.payload.item;
+      return {
+        ...state,
+        is_adm,
       };
     // Estimate Type
     case actionTypes.EDIT_IPD_PACKAGES:
@@ -101,6 +98,7 @@ const SAEstimatorRed = (state = initAdvice, action) => {
         ...state,
         isIPDPackage: ipd,
       };
+    //edit diagnosis
     case actionTypes.ADD_TREATMENT:
       return {
         ...state,
@@ -159,48 +157,15 @@ const SAEstimatorRed = (state = initAdvice, action) => {
           services: deleteservicetemp,
         },
       };
-    case actionTypes.DELETE_DOCTOR_FROM_SURGERY:
-      const {surgeonIndex, surgeryIndex} = action.payload.item;
-      let deletesurgery = state.nonPackages.services;
-      deletesurgery[surgeryIndex].surgeon.splice(surgeonIndex, 1);
+    case actionTypes.ADD_SAME_SITE:
+      const {site_index, site_surgery} = action.payload.item;
+      let site = state.nonPackages.services;
+      site[site_index].sameSite = site_surgery;
       return {
         ...state,
         nonPackages: {
           ...state.nonPackages,
-          services: deletesurgery,
-        },
-      };
-    case actionTypes.ADD_DOCTOR_TO_SURGERY:
-      const {surgeon, serviceindex} = action.payload.item;
-      let tempsurgery = state.nonPackages.services;
-      tempsurgery[serviceindex].surgeon.push(surgeon);
-      return {
-        ...state,
-        nonPackages: {
-          ...state.nonPackages,
-          services: tempsurgery,
-        },
-      };
-    case actionTypes.ADD_MINOR_TO_SURGERY:
-      const {minorsurgeryindex, minorsurgery} = action.payload.item;
-      let tempminorsurgery = state.nonPackages.services;
-      tempminorsurgery[minorsurgeryindex].isMinor = minorsurgery;
-      return {
-        ...state,
-        nonPackages: {
-          ...state.nonPackages,
-          services: tempminorsurgery,
-        },
-      };
-    case actionTypes.ADD_SAME_DOCTOR:
-      const {doc_index, doc_surgery} = action.payload.item;
-      let doc = state.nonPackages.services;
-      doc[doc_index].sameDoctor = doc_surgery;
-      return {
-        ...state,
-        nonPackages: {
-          ...state.nonPackages,
-          services: doc,
+          services: site,
         },
       };
     // Packages
@@ -232,6 +197,17 @@ const SAEstimatorRed = (state = initAdvice, action) => {
         packages: {
           ...state.packages,
           services: deletepackagetemp,
+        },
+      };
+    case actionTypes.ADD_SAME_SITE_PKG:
+      const {pkg_index, site_pkg} = action.payload.item;
+      let pkg = state.packages.services;
+      pkg[pkg_index].sameSite = site_pkg;
+      return {
+        ...state,
+        packages: {
+          ...state.packages,
+          services: pkg,
         },
       };
     // misc
@@ -349,6 +325,23 @@ const SAEstimatorRed = (state = initAdvice, action) => {
         },
       };
 
+    //diagnostics
+    case actionTypes.ADD_DIAGNOSTIC:
+      const {set} = action.payload.item;
+      console.log(set);
+      return {
+        ...state,
+        diagnostics: {
+          ...state.diagnostics,
+          services: set,
+        },
+      };
+    case actionTypes.IS_DIAG:
+      const {is_diag} = action.payload.item;
+      return {
+        ...state,
+        is_diag,
+      };
     case actionTypes.EDIT_EMERGENCY:
       const {emergency} = action.payload.item;
       return {
@@ -374,10 +367,14 @@ const SAEstimatorRed = (state = initAdvice, action) => {
         payment: {...state.payment, mode: paymentType},
       };
     case actionTypes.ADD_PAYMENT_COMPANY:
-      const {paymentCompany} = action.payload.item;
+      const {paymentCompany, policy_amount, policy_number} =
+        action.payload.item;
       return {
         ...state,
-        payment: {...state.payment, company: paymentCompany},
+        payment: {
+          ...state.payment,
+          insurance: {company: paymentCompany, policy_number, policy_amount},
+        },
       };
     // Other
     case actionTypes.ADD_MEDICINE_CHARGE:
@@ -410,20 +407,21 @@ const SAEstimatorRed = (state = initAdvice, action) => {
         ...state,
         other: {...state.other, stent},
       };
-    case actionTypes.VISIT_TOTAL:
-      const {visitTotal} = action.payload.item;
-      return {
-        ...state,
-        other: {...state.other, visitTotal},
-      };
     case actionTypes.EDIT_STEP:
       const {step} = action.payload.item;
       return {
         ...state,
         step,
       };
+    case actionTypes.ADD_PRESCRIPTION:
+      const {pres} = action.payload.item;
+      return {
+        ...state,
+        pres,
+      };
     case actionTypes.RESTORE_STATE:
-      return initAdvice;
+      return {...initAdvice, patient: state.patient};
+
     default:
       return state;
   }

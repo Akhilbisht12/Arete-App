@@ -12,12 +12,9 @@ import {Picker} from '@react-native-picker/picker';
 import {
   addService,
   deleteService,
-  addDoctorToSurgery,
-  deleteDoctorFromSurgery,
-  addMinorToSurgery,
-  editMinorSurgeryPercent,
   addSameDoctor,
   editStep,
+  addSameSite,
 } from '../../../store/actions/SAEstimatorActions';
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -40,12 +37,9 @@ const Surgery = ({
   advice,
   addService,
   deleteService,
-  addDoctorToSurgery,
-  deleteDoctorFromSurgery,
-  addMinorToSurgery,
-  editMinorSurgeryPercent,
   addSameDoctor,
   editStep,
+  addSameSite,
 }) => {
   const [Prescription, setPrescription] = useState([]);
 
@@ -70,7 +64,6 @@ const Surgery = ({
     const tempService = {
       ...service,
       surgeon: [],
-      minor: 100,
       isMinor: false,
     };
     console.log(tempService);
@@ -137,23 +130,23 @@ const Surgery = ({
           <View>
             <View style={[index === 0 ? silly.dn : silly.fr]}>
               <View style={[silly.fr]}>
-                <SillyText color="black">Same Site</SillyText>
+                <SillyText color="black">Same Site & Doctor</SillyText>
                 <Pressable
                   onPress={() => {
-                    addMinorToSurgery({
-                      minorsurgeryindex: index,
-                      minorsurgery: !item.isMinor,
+                    addSameSite({
+                      site_index: index,
+                      site_surgery: !item.sameSite,
                     });
                   }}
                   style={{marginHorizontal: 10}}>
                   <Icon
                     color={clr1}
                     size={20}
-                    name={item.isMinor ? 'checkbox-outline' : 'square-outline'}
+                    name={item.sameSite ? 'checkbox-outline' : 'square-outline'}
                   />
                 </Pressable>
               </View>
-              <View style={[silly.fr]}>
+              {/* <View style={[silly.fr]}>
                 <SillyText color="black">Same Doctor</SillyText>
                 <Pressable
                   onPress={() => {
@@ -171,7 +164,7 @@ const Surgery = ({
                     }
                   />
                 </Pressable>
-              </View>
+              </View> */}
             </View>
           </View>
         </View>
@@ -184,12 +177,9 @@ const mapDispatchToProps = dispatch => {
   return {
     addService: item => dispatch(addService(item)),
     deleteService: item => dispatch(deleteService(item)),
-    addDoctorToSurgery: item => dispatch(addDoctorToSurgery(item)),
-    deleteDoctorFromSurgery: item => dispatch(deleteDoctorFromSurgery(item)),
-    addMinorToSurgery: item => dispatch(addMinorToSurgery(item)),
-    editMinorSurgeryPercent: item => dispatch(editMinorSurgeryPercent(item)),
     addSameDoctor: item => dispatch(addSameDoctor(item)),
     editStep: item => dispatch(editStep(item)),
+    addSameSite: item => dispatch(addSameSite(item)),
   };
 };
 

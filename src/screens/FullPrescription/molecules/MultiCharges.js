@@ -32,14 +32,19 @@ const MultiCharges = ({
 }) => {
   const navigation = useNavigation();
   return (
-    <SillyView style={[advice.step >= 19 ? {} : silly.dn]}>
+    <SillyView
+      style={[
+        advice.step >= 19 && advice.admission_type !== 'Radiation'
+          ? {}
+          : silly.dn,
+      ]}>
       <View style={[]}>
         <View>
           <View style={[silly.fr, silly.aic, silly.jcbtw]}>
             <SillyText color={clr1}>Medicine Charge</SillyText>
             <SillyInput
               style={[silly.w40p]}
-              value={advice.other.medicine.toString()}
+              value={advice.other.medicine}
               onChangeText={text => {
                 if (!text) {
                   addMedicineCharge({medicine: parseInt(0)});
@@ -55,7 +60,7 @@ const MultiCharges = ({
             <SillyText color={clr1}>Equipment Charge</SillyText>
             <SillyInput
               style={[silly.w40p]}
-              value={advice.other.equipment.toString()}
+              value={advice.other.equipment}
               onChangeText={text => {
                 if (!text) {
                   addEquipmentCharge({equipment: parseInt(0)});
@@ -71,7 +76,7 @@ const MultiCharges = ({
             <SillyText color={clr1}>Blood Requirement</SillyText>
             <SillyInput
               style={[silly.w40p]}
-              value={advice.other.blood.toString()}
+              value={advice.other.blood}
               onChangeText={text => {
                 if (!text) {
                   addBloodRequirement({blood: parseInt(0)});
@@ -89,7 +94,7 @@ const MultiCharges = ({
             </SillyText>
             <SillyInput
               style={[silly.w40p]}
-              value={advice.other.stent.toString()}
+              value={advice.other.stent}
               onChangeText={text => {
                 if (!text) {
                   addStent({stent: parseInt(0)});
@@ -107,7 +112,7 @@ const MultiCharges = ({
             </SillyText>
             <SillyInput
               style={[silly.w40p]}
-              value={advice.other.miscellaneous.toString()}
+              value={advice.other.miscellaneous}
               onChangeText={text => {
                 if (!text) {
                   addOtherMisc({miscellaneous: parseInt(0)});

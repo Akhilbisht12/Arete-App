@@ -27,20 +27,11 @@ import {
 
 const {width, height} = Dimensions.get('window');
 
-const PatientEntry = ({
-  route,
-  addEmail,
-  addAge,
-  addFullName,
-  addGender,
-  addPhone,
-}) => {
-  const [showAction, setShowAction] = useState(false);
-  const [isAdmission, setisAdmission] = useState(0);
-  const [selectedAdmPkg, setSelectedAdmPkg] = useState(0);
-
+const PatientEntry = ({route, addFullName}) => {
   const data = route.params.data;
-  addFullName({patient: data});
+  useEffect(() => {
+    addFullName({patient: data});
+  }, []);
 
   return (
     <ScrollView style={Styles.main}>
@@ -129,28 +120,7 @@ const PatientEntry = ({
                 {data.email}
               </Text>
             </RowStart>
-            {/* <RowStart>
-              <Text
-                style={{
-                  color: "white",
-                  paddingHorizontal: 5,
-                  fontFamily: "Poppins-Medium",
-                  fontSize: 12,
-                }}
-              >
-                Date Of Registration:
-              </Text>
-              <Text
-                style={{
-                  color: "white",
-                  paddingHorizontal: 5,
-                  fontFamily: "Poppins-Medium",
-                  fontSize: 14,
-                }}
-              >
-                {moment(data.createdAt).format("DD/MM/YY hh:mm a")}
-              </Text>
-            </RowStart> */}
+
             <RowStart>
               <Text
                 style={{
@@ -159,20 +129,12 @@ const PatientEntry = ({
                   fontFamily: 'Poppins-Medium',
                   fontSize: 12,
                 }}>
-                Speciality:
-              </Text>
-              <Text
-                style={{
-                  color: 'white',
-                  paddingHorizontal: 5,
-                  fontFamily: 'Poppins-Medium',
-                  fontSize: 14,
-                }}>
-                Dr. Naveen Jain (Cardiology)
+                Address: {data.address.house} {data.address.city}{' '}
+                {data.address.state} {data.address.postal_code}
               </Text>
             </RowStart>
           </PatientDetailedView>
-          <PatientSessionTabs patientID={data._id} />
+          <PatientSessionTabs patientID={data._id} uhid={data.uhid} />
         </View>
       </View>
     </ScrollView>
@@ -209,10 +171,6 @@ const Styles = StyleSheet.create({
 const mapDispatchToProps = dispatch => {
   return {
     addFullName: item => dispatch(addFullName(item)),
-    addEmail: item => dispatch(addEmail(item)),
-    addAge: item => dispatch(addAge(item)),
-    addGender: item => dispatch(addGender(item)),
-    addPhone: item => dispatch(addPhone(item)),
   };
 };
 export default connect(null, mapDispatchToProps)(PatientEntry);

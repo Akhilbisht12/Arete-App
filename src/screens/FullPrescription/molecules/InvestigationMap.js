@@ -1,5 +1,5 @@
 import React from 'react';
-import {View} from 'react-native';
+import {TouchableOpacity, View} from 'react-native';
 import {connect} from 'react-redux';
 import {
   addInvestigationTotal,
@@ -14,6 +14,7 @@ import {
   SillyInput,
 } from '../../../Silly/components/silly_comps';
 import silly from '../../../Silly/styles/silly';
+import {clr1} from '../../../config/globals';
 
 const InvestigationMap = ({
   addNewInvestigation,
@@ -22,7 +23,12 @@ const InvestigationMap = ({
   editStep,
 }) => {
   return (
-    <SillyView style={[advice.step >= 16 ? {} : silly.dn]}>
+    <SillyView
+      style={[
+        advice.step >= 16 && advice.admission_type !== 'Radiation'
+          ? {}
+          : silly.dn,
+      ]}>
       <View style={[]}>
         <SillyText color="black" my={10}>
           Add Investigation
@@ -37,7 +43,7 @@ const InvestigationMap = ({
                 onPress={() => {
                   addNewInvestigation();
                 }}>
-                <SillyText>Add a investigation</SillyText>
+                <SillyText>Add investigation</SillyText>
               </SillyButton>
             </View>
           </View>
@@ -50,7 +56,7 @@ const InvestigationMap = ({
             onBlur={() => (advice.step <= 16 ? editStep({step: 17}) : null)}
             keyboardType="number-pad"
             placeholder="value"
-            value={advice.investigations.total.value.toString()}
+            value={advice.investigations.total.value}
             onChangeText={text => {
               if (!text) {
                 addInvestigationTotal({investigationTotal: parseInt(0)});
@@ -61,6 +67,11 @@ const InvestigationMap = ({
             style={[silly.w30p]}
           />
         </View>
+        <TouchableOpacity
+          style={[silly.jce, silly.fr, silly.ph]}
+          onPress={() => (advice.step <= 16 ? editStep({step: 17}) : null)}>
+          <SillyText color={clr1}>Skip</SillyText>
+        </TouchableOpacity>
       </View>
     </SillyView>
   );

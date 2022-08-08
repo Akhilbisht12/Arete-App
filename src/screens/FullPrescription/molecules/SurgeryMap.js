@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, Dimensions} from 'react-native';
+import {View, TouchableOpacity, Dimensions, ToastAndroid} from 'react-native';
 import {connect} from 'react-redux';
 import {clr1} from '../../../config/globals';
 import {
@@ -34,7 +34,7 @@ const SurgeryMap = ({advice, addNewNonPackage}) => {
               .map((item, index) => {
                 return <Surgery key={index} item={item} index={index} />;
               })}
-            <View style={[silly.ais]}>
+            <View style={[silly.fr, silly.jcbtw, silly.aic]}>
               <SillyButton
                 bg={clr1}
                 onPress={() => {
@@ -42,6 +42,33 @@ const SurgeryMap = ({advice, addNewNonPackage}) => {
                 }}>
                 <SillyText>Add surgery</SillyText>
               </SillyButton>
+              <TouchableOpacity
+                bg="transparent"
+                style={[silly.ph]}
+                onPress={() => {
+                  if (!advice.nonPackages.services[0]) {
+                    ToastAndroid.show(
+                      'Select Surgery to continue!',
+                      ToastAndroid.SHORT,
+                    );
+                    return;
+                  } else if (advice.nonPackages.services[0]) {
+                    if (!advice.nonPackages.services[0].name) {
+                      ToastAndroid.show(
+                        'Select Surgery to continue!',
+                        ToastAndroid.SHORT,
+                      );
+                      return;
+                    }
+                  }
+                  advice.step <= 15
+                    ? editStep({
+                        step: advice.admission_type === 'Radiation' ? 20 : 16,
+                      })
+                    : null;
+                }}>
+                <SillyText color={clr1}>Skip</SillyText>
+              </TouchableOpacity>
             </View>
           </View>
         </View>

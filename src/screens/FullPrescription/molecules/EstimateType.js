@@ -14,7 +14,12 @@ import silly from '../../../Silly/styles/silly';
 
 const EstimateType = ({advice, editIPDPackages, editStep}) => {
   return (
-    <SillyView style={[advice.step >= 7 ? {} : silly.dn]}>
+    <SillyView
+      style={[
+        advice.step >= 7 && advice.admission_type !== 'Radiation'
+          ? {}
+          : silly.dn,
+      ]}>
       <View style={[silly.ais]}>
         <SillyText color="black" my={10}>
           Choose type of estimate

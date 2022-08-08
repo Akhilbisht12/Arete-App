@@ -9,6 +9,7 @@ import BottomNavigator from './BottomNavigator';
 import OnboardingScreen from '../screens/Auth/OnboardingScreen';
 import Preview from '../screens/FullPrescription/Preview';
 import FullPrescription from '../screens/FullPrescription/FullPrescription';
+import History from '../screens/History/History';
 
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -21,6 +22,7 @@ const StackNavigator = () => {
       <Stack.Screen name="FullPrescription" component={FullPrescription} />
       <Stack.Screen name="Home" component={Index} />
       <Stack.Screen name="PatientEntry" component={PatientEntry} />
+      <Stack.Screen name="History" component={History} />
       <Stack.Screen
         name="QuickPrescriptionUpload"
         component={QuickPrescriptionUpload}

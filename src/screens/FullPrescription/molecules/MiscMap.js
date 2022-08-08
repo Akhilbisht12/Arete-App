@@ -15,7 +15,12 @@ const {width} = Dimensions.get('window');
 
 const MiscMap = ({addNewMisc, advice, editStep}) => {
   return (
-    <SillyView style={[advice.step >= 18 ? {} : silly.dn]}>
+    <SillyView
+      style={[
+        advice.step >= 18 && advice.admission_type !== 'Radiation'
+          ? {}
+          : silly.dn,
+      ]}>
       <View>
         <SillyText color="black" my={10}>
           Add Other Billing Heads
@@ -29,10 +34,10 @@ const MiscMap = ({addNewMisc, advice, editStep}) => {
               <SillyButton
                 style={{marginVertical: 5}}
                 onPress={() => addNewMisc()}>
-                <SillyText>Add a OBH</SillyText>
+                <SillyText>Add OBH</SillyText>
               </SillyButton>
               <TouchableOpacity
-                style={[silly.mx1]}
+                style={[silly.ph]}
                 bg="transparent"
                 onPress={() =>
                   advice.step <= 18 ? editStep({step: 20}) : null

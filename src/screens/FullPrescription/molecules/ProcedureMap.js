@@ -1,10 +1,11 @@
 import React from 'react';
-import {View} from 'react-native';
+import {TouchableOpacity, View} from 'react-native';
 import {connect} from 'react-redux';
 import {
   addNewProcedure,
   addProcedureTotal,
   editStep,
+  restoreState,
 } from '../../../store/actions/SAEstimatorActions';
 import {calculateProcedure} from '../../../utils/EstimateCalculator';
 import Procedure from '../atoms/Procedure';
@@ -15,15 +16,26 @@ import {
   SillyInput,
 } from '../../../Silly/components/silly_comps';
 import silly from '../../../Silly/styles/silly';
+import {clr1} from '../../../config/globals';
+import {useEffect} from 'react';
 
 const ProcedureMap = ({
   addNewProcedure,
   advice,
   addProcedureTotal,
   editStep,
+  restoreState,
 }) => {
+  useEffect(() => {
+    restoreState();
+  }, []);
   return (
-    <SillyView style={[advice.step >= 17 ? {} : silly.dn]}>
+    <SillyView
+      style={[
+        advice.step >= 17 && advice.admission_type !== 'Radiation'
+          ? {}
+          : silly.dn,
+      ]}>
       <View style={[]}>
         <SillyText color="black" my={10}>
           Add Procedures
@@ -35,7 +47,7 @@ const ProcedureMap = ({
             })}
             <View style={[silly.fr, silly.jcbtw]}>
               <SillyButton onPress={() => addNewProcedure()}>
-                <SillyText>Add a Procedure</SillyText>
+                <SillyText>Add Procedure</SillyText>
               </SillyButton>
             </View>
           </View>
@@ -48,7 +60,7 @@ const ProcedureMap = ({
             onBlur={() => (advice.step <= 17 ? editStep({step: 18}) : null)}
             keyboardType="number-pad"
             placeholder="value"
-            value={advice.procedures.total.value.toString()}
+            value={advice.procedures.total.value}
             onChangeText={text => {
               if (!text) {
                 addProcedureTotal({procedureTotal: parseInt(0)});
@@ -59,6 +71,11 @@ const ProcedureMap = ({
             style={[silly.w30p]}
           />
         </View>
+        <TouchableOpacity
+          onPress={() => (advice.step <= 17 ? editStep({step: 18}) : null)}
+          style={[silly.fr, silly.jce, silly.ph]}>
+          <SillyText color={clr1}>Skip</SillyText>
+        </TouchableOpacity>
       </View>
     </SillyView>
   );
@@ -73,6 +90,7 @@ const mapDispatchToProps = dispatch => {
     addNewProcedure: () => dispatch(addNewProcedure()),
     addProcedureTotal: item => dispatch(addProcedureTotal(item)),
     editStep: item => dispatch(editStep(item)),
+    restoreState: () => dispatch(restoreState()),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ProcedureMap);

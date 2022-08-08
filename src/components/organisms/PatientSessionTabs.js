@@ -8,12 +8,13 @@ import {connect} from 'react-redux';
 import silly from '../../Silly/styles/silly';
 import {SillyView, SillyText} from '../../Silly/components/silly_comps';
 import {clr1} from '../../config/globals';
-const PatientSessionTabs = ({patientID, restoreState}) => {
+const PatientSessionTabs = ({patientID, uhid, restoreState}) => {
+  console.log(patientID);
   const navigation = useNavigation();
   return (
     <View>
       <View style={[silly.jcbtw, silly.aic, silly.fr, silly.jceven]}>
-        <Pressable>
+        <Pressable onPress={() => navigation.navigate('History', {uhid})}>
           <SillyView
             py={20}
             style={[silly.w45p, silly.aic, silly.h20p, silly.jcaround]}>
@@ -30,7 +31,7 @@ const PatientSessionTabs = ({patientID, restoreState}) => {
             style={[silly.w45p, silly.aic, silly.h20p, silly.jcaround]}>
             <Icon name="cloud-upload" size={50} color={'#151E3F'} />
             <SillyText color={clr1} family="Medium" size={18}>
-              Upload Full Prescription
+              Upload Prescription
             </SillyText>
           </SillyView>
         </Pressable>

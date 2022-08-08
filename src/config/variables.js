@@ -1,4 +1,4 @@
-exports.SERVER_URL = 'https://e088-103-84-238-250.ngrok.io';
+exports.SERVER_URL = 'https://backend.aretehealth.tech';
 exports.colors = {
   primary: '#2d3e50',
   seconday: '#E4DFDA',

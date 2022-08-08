@@ -78,8 +78,8 @@ const RegisterPatient = ({}) => {
       // addPatient({ patient: response.patient });
       // navigation.navigate("PatientEntry", { data: response.patient });
     } catch (error) {
-      console.log(error);
-      ToastAndroid.show('Something Went Wrong', ToastAndroid.SHORT);
+      console.log(error.response.data);
+      ToastAndroid.show(error.response.data.message, ToastAndroid.SHORT);
       setLoader(false);
     }
   };
@@ -192,6 +192,7 @@ const RegisterPatient = ({}) => {
         ].map((item, i) => {
           return (
             <SillyInput
+              key={i}
               value={data.address[item.val]}
               keyboardType={item.type ? item.type : null}
               placeholder={item.name}

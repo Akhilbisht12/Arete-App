@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View} from 'react-native';
+import {ToastAndroid, View} from 'react-native';
 import {connect} from 'react-redux';
 import {Picker} from '@react-native-picker/picker';
 import {
@@ -60,8 +60,14 @@ const BedWidget = ({advice, addIcuBed, addWardStay, addIcuStay, editStep}) => {
                 addWardStay({wardStay: parseInt(text)});
               }
             }}
-            onBlur={() => (advice.step <= 8 ? editStep({step: 9}) : null)}
-            value={advice.ward.toString()}
+            onBlur={() => {
+              if (!advice.ward) {
+                ToastAndroid.show('Field Required', ToastAndroid.SHORT);
+                return;
+              }
+              advice.step <= 8 ? editStep({step: 9}) : null;
+            }}
+            value={advice.ward}
             keyboardType="number-pad"
             placeholder="Ward"
           />
@@ -79,10 +85,16 @@ const BedWidget = ({advice, addIcuBed, addWardStay, addIcuStay, editStep}) => {
             <SillyPicker data={ICUFee} func={addIcuBed} />
           </View> */}
           <Picker
+            onBlur={() => {
+              if (!advice.icu.icu_type) {
+                ToastAndroid.show('Field Required!', ToastAndroid.SHORT);
+                return;
+              }
+              advice.step <= 9 ? editStep({step: 10}) : null;
+            }}
             style={[silly.w80p, {color: 'black'}]}
             onValueChange={(itemValue, itemIndex) => {
               addIcuBed({type: itemValue});
-              advice.step <= 9 ? editStep({step: 10}) : null;
             }}
             selectedValue={advice.icu.icu_type}>
             <Picker.Item label="select icu bed type" value="" />
@@ -108,7 +120,7 @@ const BedWidget = ({advice, addIcuBed, addWardStay, addIcuStay, editStep}) => {
             bg="transparent"
             brw={0.01}
             textContentType="telephoneNumber"
-            value={advice.icu.days.toString()}
+            value={advice.icu.days}
             onChangeText={text => {
               if (!text) {
                 addIcuStay({icuStay: parseInt(0)});
@@ -116,7 +128,13 @@ const BedWidget = ({advice, addIcuBed, addWardStay, addIcuStay, editStep}) => {
                 addIcuStay({icuStay: parseInt(text)});
               }
             }}
-            onBlur={() => (advice.step <= 10 ? editStep({step: 11}) : null)}
+            onBlur={() => {
+              if (!advice.icu.days) {
+                ToastAndroid.show('Field Required!', ToastAndroid.SHORT);
+                return;
+              }
+              advice.step <= 10 ? editStep({step: 11}) : null;
+            }}
             keyboardType="number-pad"
             placeholder="ICU"
           />

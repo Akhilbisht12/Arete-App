@@ -35,7 +35,7 @@ const LoginScreen = ({navigation}) => {
         </View>
         <View style={silly.mt1}>
           <SillyText family="Medium">Password</SillyText>
-          <SillyInput placeholder="Enter Password" />
+          <SillyInput secureTextEntry={true} placeholder="Enter Password" />
           <Pressable style={{marginTop: 5}}>
             <SillyText
               family="Medium"
@@ -69,7 +69,7 @@ const LoginScreen = ({navigation}) => {
             </Text>
           </View>
         </Pressable>
-        <Text
+        {/* <Text
           style={{
             margin: 10,
             textAlign: 'center',
@@ -92,7 +92,7 @@ const LoginScreen = ({navigation}) => {
               Register
             </Text>
           </Pressable>
-        </View>
+        </View> */}
       </View>
     </View>
   );

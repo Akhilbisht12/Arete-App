@@ -9,6 +9,7 @@ import {
 import {connect} from 'react-redux';
 import {
   addPackage,
+  addSameSitePkg,
   deletePackage,
   editStep,
 } from '../../../store/actions/SAEstimatorActions';
@@ -32,6 +33,7 @@ const Package = ({
   addPackage,
   deletePackage,
   editStep,
+  addSameSitePkg,
 }) => {
   const [Prescription, setPrescription] = useState([]);
 
@@ -87,7 +89,11 @@ const Package = ({
                   key={service._id}
                   onPress={() => {
                     addServiceToState(service);
-                    advice.step <= 15 ? editStep({step: 16}) : null;
+                    advice.step <= 15
+                      ? editStep({
+                          step: advice.admission_type === 'Radiation' ? 21 : 16,
+                        })
+                      : null;
                   }}>
                   <SillyText color="black">{service.name}</SillyText>
                 </SillyButton>
@@ -114,6 +120,25 @@ const Package = ({
               </View>
             </View>
           </View>
+          <View style={[index === 0 ? silly.dn : silly.fr]}>
+            <View style={[silly.fr]}>
+              <SillyText color="black">Same Site & Doctor</SillyText>
+              <Pressable
+                onPress={() => {
+                  addSameSitePkg({
+                    pkg_index: index,
+                    site_pkg: !item.sameSite,
+                  });
+                }}
+                style={{marginHorizontal: 10}}>
+                <Icon
+                  color={clr1}
+                  size={20}
+                  name={item.sameSite ? 'checkbox-outline' : 'square-outline'}
+                />
+              </Pressable>
+            </View>
+          </View>
         </View>
       </View>
     </SillyView>
@@ -125,6 +150,7 @@ const mapDispatchToProps = dispatch => {
     deletePackage: item => dispatch(deletePackage(item)),
     addPackage: item => dispatch(addPackage(item)),
     editStep: item => dispatch(editStep(item)),
+    addSameSitePkg: item => dispatch(addSameSitePkg(item)),
   };
 };
 

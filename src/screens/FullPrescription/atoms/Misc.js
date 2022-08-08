@@ -81,7 +81,7 @@ const Misc = ({item, index, addMiscPackage, deleteMisc, editStep, advice}) => {
               <SillyText color="black" my={5} style={{width: 0.6 * width}}>
                 {item.name}
               </SillyText>
-              <View style={[silly.fr]}>
+              <View style={[silly.fr, {flexWrap: 'wrap'}]}>
                 <SillyView bg={clr1}>
                   <SillyText>{item.department}</SillyText>
                 </SillyView>

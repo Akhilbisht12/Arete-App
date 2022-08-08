@@ -11,36 +11,14 @@ export const addSpeciality = item => {
     payload: {item},
   };
 };
-export const addPhone = item => {
-  return {
-    type: actionTypes.ADD_PHONE,
-    payload: {item},
-  };
-};
-export const addEmail = item => {
-  return {
-    type: actionTypes.ADD_EMAIL,
-    payload: {item},
-  };
-};
-export const addAge = item => {
-  return {
-    type: actionTypes.ADD_AGE,
-    payload: {item},
-  };
-};
-export const addGender = item => {
-  return {
-    type: actionTypes.ADD_GENDER,
-    payload: {item},
-  };
-};
+
 export const addAdvice = () => {
   return {
     type: actionTypes.ADD_ADVICE,
     payload: {},
   };
 };
+//adding diagnois
 export const addTreatment = item => {
   return {
     type: actionTypes.ADD_TREATMENT,
@@ -52,14 +30,6 @@ export const addTreatment = item => {
 export const editAdvice = item => {
   return {
     type: actionTypes.EDIT_ADVICE,
-    payload: {
-      item,
-    },
-  };
-};
-export const addWardBed = item => {
-  return {
-    type: actionTypes.ADD_WARD_BED,
     payload: {
       item,
     },
@@ -97,6 +67,7 @@ export const editIPDPackages = item => {
     },
   };
 };
+//non packages
 export const addService = item => {
   return {
     type: actionTypes.ADD_SERVICE,
@@ -121,31 +92,10 @@ export const deleteService = item => {
     },
   };
 };
-export const addCharge = () => {
-  return {
-    type: actionTypes.ADD_CHARGE,
-    payload: {},
-  };
-};
-export const editCharge = item => {
-  return {
-    type: actionTypes.EDIT_CHARGE,
-    payload: {
-      item,
-    },
-  };
-};
+
 export const editEmergency = item => {
   return {
     type: actionTypes.EDIT_EMERGENCY,
-    payload: {
-      item,
-    },
-  };
-};
-export const deleteAddCharge = item => {
-  return {
-    type: actionTypes.DELETE_ADD_CHARGE,
     payload: {
       item,
     },
@@ -159,14 +109,7 @@ export const addDoctor = item => {
     },
   };
 };
-export const addRemark = item => {
-  return {
-    type: actionTypes.ADD_REMARK,
-    payload: {
-      item,
-    },
-  };
-};
+//payment
 export const addPaymentType = item => {
   return {
     type: actionTypes.ADD_PAYMENT_TYPE,
@@ -183,46 +126,25 @@ export const addPaymentCompany = item => {
     },
   };
 };
-export const addDoctorToSurgery = item => {
+export const addSameSite = item => {
   return {
-    type: actionTypes.ADD_DOCTOR_TO_SURGERY,
+    type: actionTypes.ADD_SAME_SITE,
     payload: {
       item,
     },
   };
 };
-export const deleteDoctorFromSurgery = item => {
+
+export const addSameSitePkg = item => {
   return {
-    type: actionTypes.DELETE_DOCTOR_FROM_SURGERY,
+    type: actionTypes.ADD_SAME_SITE_PKG,
     payload: {
       item,
     },
   };
 };
-export const addMinorToSurgery = item => {
-  return {
-    type: actionTypes.ADD_MINOR_TO_SURGERY,
-    payload: {
-      item,
-    },
-  };
-};
-export const addSameDoctor = item => {
-  return {
-    type: actionTypes.ADD_SAME_DOCTOR,
-    payload: {
-      item,
-    },
-  };
-};
-export const editMinorSurgeryPercent = item => {
-  return {
-    type: actionTypes.EDIT_MINOR_SURGERY_PERCENT,
-    payload: {
-      item,
-    },
-  };
-};
+
+//add investigation
 export const addNewInvestigation = item => {
   return {
     type: actionTypes.ADD_NEW_INVESTIGATION,
@@ -247,6 +169,7 @@ export const deleteInvestigation = item => {
     },
   };
 };
+//oth
 export const addNewOTH = item => {
   return {
     type: actionTypes.ADD_NEW_OTH,
@@ -279,6 +202,8 @@ export const addOTHTotal = item => {
     },
   };
 };
+
+//procedure
 export const addNewProcedure = () => {
   console.log('hit');
   return {
@@ -302,12 +227,7 @@ export const deleteProcedure = item => {
     },
   };
 };
-export const addNewDiagnostic = () => {
-  return {
-    type: actionTypes.ADD_NEW_DIAGNOSTIC,
-    payload: {},
-  };
-};
+
 export const addDiagnostic = item => {
   return {
     type: actionTypes.ADD_DIAGNOSTIC,
@@ -316,36 +236,15 @@ export const addDiagnostic = item => {
     },
   };
 };
-export const deleteDiagnostic = item => {
+export const isDiagnostics = item => {
   return {
-    type: actionTypes.DELETE_DIAGNOSTIC,
+    type: actionTypes.IS_DIAG,
     payload: {
       item,
     },
   };
 };
-export const addNewRadiology = () => {
-  return {
-    type: actionTypes.ADD_NEW_RADIOLOGY,
-    payload: {},
-  };
-};
-export const addRadiology = item => {
-  return {
-    type: actionTypes.ADD_RADIOLOGY,
-    payload: {
-      item,
-    },
-  };
-};
-export const deleteRadiology = item => {
-  return {
-    type: actionTypes.DELETE_RADIOLOGY,
-    payload: {
-      item,
-    },
-  };
-};
+//package
 export const addNewPackage = () => {
   return {
     type: actionTypes.ADD_NEW_PACKAGE,
@@ -374,6 +273,7 @@ export const deletePackage = item => {
     },
   };
 };
+//other charges
 export const addMedicineCharge = item => {
   return {
     type: actionTypes.ADD_MEDICINE_CHARGE,
@@ -431,14 +331,7 @@ export const addProcedureTotal = item => {
     },
   };
 };
-export const addVisitTotal = item => {
-  return {
-    type: actionTypes.VISIT_TOTAL,
-    payload: {
-      item,
-    },
-  };
-};
+
 export const editStep = item => {
   return {
     type: actionTypes.EDIT_STEP,
@@ -489,6 +382,31 @@ export const adm_type = item => {
 export const rad_type = item => {
   return {
     type: actionTypes.RAD_ADV,
+    payload: {
+      item,
+    },
+  };
+};
+
+export const isEst = item => {
+  return {
+    type: actionTypes.IS_EST,
+    payload: {
+      item,
+    },
+  };
+};
+export const isAdm = item => {
+  return {
+    type: actionTypes.IS_ADM,
+    payload: {
+      item,
+    },
+  };
+};
+export const CapPres = item => {
+  return {
+    type: actionTypes.ADD_PRESCRIPTION,
     payload: {
       item,
     },

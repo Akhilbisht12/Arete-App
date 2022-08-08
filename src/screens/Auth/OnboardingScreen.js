@@ -121,7 +121,7 @@ const OnboardingScreen = ({navigation}) => {
             <View style={{height: 50}}>
               <TouchableOpacity
                 style={styles.btn}
-                onPress={() => navigation.navigate('AgentIndex')}>
+                onPress={() => navigation.navigate('LoginScreen')}>
                 <Text
                   style={{fontWeight: 'bold', fontSize: 15, color: 'black'}}>
                   GET STARTED

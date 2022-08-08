@@ -1,4 +1,4 @@
-import {View, Text} from 'react-native';
+import {View, Text, ToastAndroid} from 'react-native';
 import React from 'react';
 import {
   SillyInput,
@@ -61,7 +61,13 @@ const Doctor = ({addDoctor, addSpeciality, advice, addDiagnosis, editStep}) => {
         <SillyText color={clr1}>Diagnosis</SillyText>
         <SillyInput
           value={advice.diagnosis}
-          onBlur={() => editStep({step: 1})}
+          onBlur={() => {
+            if (!advice.diagnosis) {
+              ToastAndroid.show('Field Required!', ToastAndroid.SHORT);
+              return;
+            }
+            editStep({step: 1});
+          }}
           onChangeText={advise => addDiagnosis({treatment: advise})}
           placeholder="doctor advise"
         />
@@ -72,10 +78,16 @@ const Doctor = ({addDoctor, addSpeciality, advice, addDiagnosis, editStep}) => {
             Select Speciality
           </SillyText>
           <Picker
+            onBlur={() => {
+              if (!advice.speciality) {
+                ToastAndroid.show('Field Required!', ToastAndroid.SHORT);
+                return;
+              }
+              advice.step > 2 ? null : editStep({step: 2});
+            }}
             selectedValue={advice.speciality}
             onValueChange={itemValue => {
               addSpeciality({speciality: itemValue});
-              advice.step > 2 ? null : editStep({step: 2});
             }}
             style={[silly.w85p, {color: 'black'}]}>
             <Picker.Item value="" label="Select Speciality" />
@@ -93,10 +105,16 @@ const Doctor = ({addDoctor, addSpeciality, advice, addDiagnosis, editStep}) => {
             Select Doctor
           </SillyText>
           <Picker
+            onBlur={() => {
+              if (!advice.doctor) {
+                ToastAndroid.show('Field Required!', ToastAndroid.SHORT);
+                return;
+              }
+              advice.step > 3 ? null : editStep({step: 3});
+            }}
             selectedValue={advice.doctor}
             onValueChange={itemValue => {
               addDoctor({doctor: itemValue});
-              advice.step > 3 ? null : editStep({step: 3});
             }}
             style={[silly.w85p, {color: 'black'}]}>
             <Picker.Item value="" label="Select Doctor" />

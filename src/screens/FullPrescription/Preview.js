@@ -1,4 +1,4 @@
-import {View, Image} from 'react-native';
+import {View, Image, ToastAndroid} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import silly from '../../Silly/styles/silly';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -8,11 +8,26 @@ import {
   SillyText,
   SillyView,
   SillyButton,
+  SillyLoad,
 } from '../../Silly/components/silly_comps';
 import {clr1} from '../../config/globals';
 import axios from 'axios';
 import {SERVER_URL} from '../../config/variables';
-const Preview = ({estimate}) => {
+import {createAppointment} from './createAppointment';
+import {restoreState} from '../../store/actions/SAEstimatorActions';
+const Preview = ({estimate, navigation, restoreState}) => {
+  const [loading, setLoading] = useState(false);
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+      await createAppointment();
+      setLoading(false);
+      ToastAndroid.show('Prescription Upload Successfully', ToastAndroid.SHORT);
+      navigation.navigate('AgentIndex', {screen: 'Find'});
+    } catch (error) {
+      setLoading(false);
+    }
+  };
   const [ward, setWard] = useState([]);
   useEffect(() => {
     const roomreq = async () => {
@@ -41,7 +56,6 @@ const Preview = ({estimate}) => {
     if (estimate.isIPDPackage) {
       estimate.packages.services.map(item => {
         for (const [k, v] of Object.entries(item.room)) {
-          console.log(k, v);
           if (k === code) {
             total = total + v;
           }
@@ -71,19 +85,37 @@ const Preview = ({estimate}) => {
     return total;
   };
   const calcInvestigations = code => {
-    if (estimate.investigations.total.calc) {
-      return estimate.investigations.total.value;
-    } else {
-      let total = 0;
-      estimate.investigations.services.map(item => {
-        for (const [k, v] of Object.entries(item.room)) {
-          if (k === code) {
-            total = total + v;
-          }
+    let total = 0;
+    estimate.investigations.services.map(item => {
+      for (const [k, v] of Object.entries(item.room)) {
+        if (k === code) {
+          total = total + v;
         }
-      });
-      return total;
-    }
+      }
+    });
+    return total + estimate.investigations.total.value;
+  };
+  const calcProcedures = code => {
+    let total = 0;
+    estimate.procedures.services.map(item => {
+      for (const [k, v] of Object.entries(item.room)) {
+        if (k === code) {
+          total = total + v;
+        }
+      }
+    });
+    return total + estimate.procedures.total.value;
+  };
+  const calcOBH = code => {
+    let total = 0;
+    estimate.misc.services.map(item => {
+      for (const [k, v] of Object.entries(item.room)) {
+        if (k === code) {
+          total = total + v;
+        }
+      }
+    });
+    return total;
   };
   const calcDoctorVisit = ({visit, emergency_visit}) => {
     if (estimate.isEmergency) {
@@ -100,6 +132,8 @@ const Preview = ({estimate}) => {
       JSON.parse(calcNonPackage(code)) +
       JSON.parse(getOtherTotal()) +
       JSON.parse(calcInvestigations(code)) +
+      JSON.parse(calcProcedures(code)) +
+      JSON.parse(calcOBH(code)) +
       JSON.parse(calcDoctorVisit({visit, emergency_visit}));
     return total;
   };
@@ -132,7 +166,10 @@ const Preview = ({estimate}) => {
                   estimate.patient.firstName + ' ' + estimate.patient.lastName,
               },
               {name: 'Age', value: estimate.patient.age},
-              {name: 'Doctor', value: estimate.doctor},
+              {
+                name: 'Doctor',
+                value: estimate.doctor + ' / ' + estimate.speciality,
+              },
             ].map((item, i) => {
               return (
                 <View key={i} style={[silly.fr]}>
@@ -174,7 +211,7 @@ const Preview = ({estimate}) => {
             })}
           </View>
           <View style={[silly.my1]}>
-            <SillyView style={[silly.fr]}>
+            <SillyView style={[]}>
               <SillyText style={[silly.mr1]} color={clr1} family="Medium">
                 {estimate.isIPDPackage ? 'Package Name :' : 'Surgery Name :'}
               </SillyText>
@@ -245,10 +282,36 @@ const Preview = ({estimate}) => {
                         family="Medium"
                         style={[silly.mr1]}
                         color={clr1}>
-                        investigation:
+                        Investigation:
                       </SillyText>
                       <SillyText color={clr1}>
                         {calcInvestigations(item.code)} INR
+                      </SillyText>
+                    </View>
+                  </View>
+                  <View>
+                    <View style={[silly.fr]}>
+                      <SillyText
+                        family="Medium"
+                        style={[silly.mr1]}
+                        color={clr1}>
+                        Procedures:
+                      </SillyText>
+                      <SillyText color={clr1}>
+                        {calcProcedures(item.code)} INR
+                      </SillyText>
+                    </View>
+                  </View>
+                  <View>
+                    <View style={[silly.fr]}>
+                      <SillyText
+                        family="Medium"
+                        style={[silly.mr1]}
+                        color={clr1}>
+                        Other Billing Heads:
+                      </SillyText>
+                      <SillyText color={clr1}>
+                        {calcOBH(item.code)} INR
                       </SillyText>
                     </View>
                   </View>
@@ -286,8 +349,18 @@ const Preview = ({estimate}) => {
               );
             })}
           </View>
+          <SillyView>
+            <Image
+              style={[silly.w90p, silly.h60p, silly.rmcon]}
+              source={{uri: `file://${estimate.pres}`}}
+            />
+          </SillyView>
+          <SillyButton onPress={handleSubmit}>
+            <SillyText center>Submit Prescription</SillyText>
+          </SillyButton>
         </View>
       </ScrollView>
+      <SillyLoad show={loading} />
     </View>
   );
 };
@@ -298,4 +371,10 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(Preview);
+const mapDispatchToProps = dispatch => {
+  return {
+    restoreState: item => dispatch(restoreState(item)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Preview);

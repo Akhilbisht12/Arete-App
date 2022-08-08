@@ -8,15 +8,18 @@ import {
   Image,
   PermissionsAndroid,
   Alert,
+  BackHandler,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {Camera, useCameraDevices} from 'react-native-vision-camera';
 import Icon from 'react-native-vector-icons/Ionicons';
 import silly from '../../Silly/styles/silly';
 import SillyText from '../../Silly/components/SillyText';
-import {clr1} from '../../config/globals';
+import {clr1, clr2} from '../../config/globals';
+import {connect} from 'react-redux';
+import {CapPres, editStep} from '../../store/actions/SAEstimatorActions';
 
-const CameraView = ({photo, setPhoto, setCamera, width}) => {
+const CameraView = ({photo, setPhoto, setCamera, width, editStep, CapPres}) => {
   const {height} = Dimensions.get('window');
   const devices = useCameraDevices('wide-angle-camera');
   const device = devices.back;
@@ -26,7 +29,8 @@ const CameraView = ({photo, setPhoto, setCamera, width}) => {
   const [perm, setPerm] = useState();
   useEffect(() => {
     getCameraPermissions();
-  }, []);
+  }, [perm]);
+
   const getCameraPermissions = async () => {
     const cameraPermission = await Camera.getCameraPermissionStatus();
     setPerm(cameraPermission);
@@ -40,10 +44,13 @@ const CameraView = ({photo, setPhoto, setCamera, width}) => {
     setFlash(!flash);
   };
   const handlePhotoClick = async () => {
-    const photo = await camera.current.takePhoto({
+    const photo = await camera.current.takeSnapshot({
       flash: flash ? 'on' : 'off',
+      quality: 40,
     });
+
     setPhoto(photo.path);
+    CapPres({pres: photo.path});
     setShowPhoto(true);
     console.log(photo.path);
   };
@@ -66,77 +73,73 @@ const CameraView = ({photo, setPhoto, setCamera, width}) => {
   }
   if (showPhoto) {
     return (
-      <View>
-        <View>
+      <View style={[silly.bg2]}>
+        <View style={[silly.bg2]}>
           <Image
             source={{uri: `file://${photo}`}}
-            style={{height: height - 200, width: width}}
+            style={{height: height, width: width}}
           />
         </View>
-        <View>
+        <View style={[silly.pa, silly.b0, silly.w100p]}>
           <View style={[silly.p1, silly.fr, silly.jcbtw, silly.aic]}>
             <TouchableOpacity
-              style={[silly.fr, silly.aic]}
+              style={[
+                silly.fr,
+                silly.aic,
+                silly.bg2,
+                silly.p2,
+                silly.br30,
+                silly.m1,
+              ]}
               onPress={() => {
                 setPhoto('');
                 setShowPhoto(false);
               }}>
-              <Icon
-                name="ios-arrow-undo-sharp"
-                size={25}
-                color="white"
-                style={{
-                  backgroundColor: '#2d3e50',
-                  padding: 20,
-                  borderRadius: 100,
-                }}
-              />
-              <SillyText color={clr1} size={20} mx={10}>
-                Retake
-              </SillyText>
+              <Icon name="ios-arrow-undo-sharp" size={25} color={clr1} />
             </TouchableOpacity>
-            {/* <TouchableOpacity onPress={() => setCamera(false)}>
-              <Icon
-                name="ios-checkmark-done-sharp"
-                size={25}
-                color="white"
-                style={{
-                  backgroundColor: '#2d3e50',
-                  padding: 20,
-                  borderRadius: 200,
-                }}
-              />
-            </TouchableOpacity> */}
+            <TouchableOpacity
+              style={[
+                silly.fr,
+                silly.aic,
+                silly.bg2,
+                silly.p2,
+                silly.br30,
+                silly.m1,
+              ]}
+              onPress={() => editStep({step: 24})}>
+              <Icon name="ios-checkmark-done-sharp" size={25} color={clr1} />
+            </TouchableOpacity>
           </View>
         </View>
       </View>
     );
   }
   return (
-    <View>
+    <View style={[]}>
       <Camera
         ref={camera}
-        style={{width: width, height: height - 200}}
+        style={[{width: width, height: height}]}
         device={device}
         isActive={true}
         photo={true}
       />
-
+      <View style={[silly.pa, silly.top5p, silly.right5p]}>
+        <TouchableOpacity onPress={() => setCamera(false)}>
+          <Icon color={clr2} name="close-outline" size={40} />
+        </TouchableOpacity>
+      </View>
       <View
-        style={{
-          height: 200,
-          flexDirection: 'row',
-          backgroundColor: 'black',
-          width: width,
-        }}>
-        <View
-          style={{
-            height: 200,
-            width: width / 3,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <TouchableOpacity onPress={handleFlash} style={{marginBottom: 40}}>
+        style={[
+          silly.pa,
+          silly.b0,
+          silly.fr,
+          silly.w100p,
+          {
+            height: 100,
+          },
+        ]}>
+        <View style={[silly.jcc, silly.aic, silly.w30p, {height: 100}]}>
+          <TouchableOpacity onPress={handleFlash} style={silly.mb4}>
             <Icon
               name="flash"
               size={25}
@@ -152,7 +155,7 @@ const CameraView = ({photo, setPhoto, setCamera, width}) => {
             width: width / 3,
             justifyContent: 'center',
             alignItems: 'center',
-            height: 200,
+            height: 100,
           }}>
           <TouchableOpacity
             onPress={handlePhotoClick}
@@ -172,14 +175,17 @@ const CameraView = ({photo, setPhoto, setCamera, width}) => {
             width: width / 3,
             justifyContent: 'center',
             alignItems: 'center',
-            height: 200,
+            height: 100,
           }}
         />
       </View>
     </View>
   );
 };
-
-export default CameraView;
-
-const styles = StyleSheet.create({});
+const mapDispatchToProps = dispatch => {
+  return {
+    editStep: item => dispatch(editStep(item)),
+    CapPres: item => dispatch(CapPres(item)),
+  };
+};
+export default connect(null, mapDispatchToProps)(CameraView);
